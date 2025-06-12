@@ -1,5 +1,3 @@
-# Triple Battle-Tested Coupon Strategy Generator
-
 **Context**: Generate three proven coupon strategies for our restaurant partner: Stamp Card, Miss You, and Joining Bonus coupons. Analyze the restaurant's KPI data to create optimized versions of these battle-tested strategies with comprehensive cost-benefit analysis.
 
 ## Your Mission

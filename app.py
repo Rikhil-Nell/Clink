@@ -1,12 +1,12 @@
 import streamlit as st
 import asyncio
-from main import standard_coupon_agent, creative_coupon_agent, Deps, ModelRequest, ModelResponse, UserPromptPart, TextPart, messages
+from main import Agent, chat_agent, standard_coupon_agent, creative_coupon_agent, Deps, message_history
 from pathlib import Path
 import time
 
 # Set up the Streamlit app
 st.set_page_config(
-    page_title="Clink - Restaurant KPI Analyzer", 
+    page_title="Clink - Restaurant KPI Analyzer",
     page_icon="🍽️",
     layout="wide"
 )
@@ -17,19 +17,23 @@ st.markdown("*Data-driven coupon strategies for Indian restaurants*")
 # Sidebar for quick actions and info
 with st.sidebar:
     st.header("📊 Quick Actions")
-    
+
     if st.button("🔍 Explore KPI Structure", use_container_width=True):
         st.session_state.auto_query = "Show me the complete KPI folder structure"
-    
+        st.session_state.selected_agent = "chat"
+
     if st.button("📈 Customer Analysis", use_container_width=True):
         st.session_state.auto_query = "List all files in customer_analysis and give me a brief overview"
-    
+        st.session_state.selected_agent = "chat"
+
     if st.button("🛒 Order Analysis", use_container_width=True):
         st.session_state.auto_query = "List all files in order_analysis and show key insights"
-    
+        st.session_state.selected_agent = "chat"
+
     if st.button("🍕 Product Analysis", use_container_width=True):
         st.session_state.auto_query = "Show me product_analysis structure and recent performance data"
-
+        st.session_state.selected_agent = "chat"
+        
     if st.button("📚 Generate Standard Coupon", use_container_width=True):
         st.session_state.auto_query = "Generate standard coupons to increase footfall"
         st.session_state.selected_agent = "standard"
@@ -37,9 +41,9 @@ with st.sidebar:
     if st.button("🎲 Generate Creative Coupon", use_container_width=True):
         st.session_state.auto_query = "Generate creative coupon strategies for footfall increase"
         st.session_state.selected_agent = "creative"
-    
+
     st.divider()
-    
+
     st.header("💡 Sample Queries")
     st.markdown("""
     **Quick starts:**
@@ -51,7 +55,7 @@ with st.sidebar:
     """)
 
     st.divider()
-    
+
     st.header("⚙️ System Info")
     kpi_path = Path("./results")
     if kpi_path.exists():
@@ -68,12 +72,12 @@ if "auto_query" not in st.session_state:
     st.session_state.auto_query = None
 
 if "selected_agent" not in st.session_state:
-    st.session_state.selected_agent = "standard"
+    st.session_state.selected_agent = "chat"
 
 # Welcome message
 if not st.session_state.messages:
     welcome_msg = {
-        "role": "assistant", 
+        "role": "assistant",
         "content": "👋 **Welcome to Clink!**"}
     st.session_state.messages.append(welcome_msg)
 
@@ -98,16 +102,23 @@ def display_messages():
                 st.write(message["content"])
 
 async def get_bot_response(user_input: str):
+    
+    global message_history
+
     try:
         with st.spinner("🤖 Clink is analyzing your data..."):
-            active_agent = (
-                standard_coupon_agent 
-                if st.session_state.selected_agent == "standard" 
-                else creative_coupon_agent
-            )
+            
+            active_agent: Agent
+            if st.session_state.selected_agent == "standard":
+                active_agent = standard_coupon_agent
+            elif st.session_state.selected_agent == "creative":
+                active_agent = creative_coupon_agent
+            else:
+                active_agent = chat_agent
 
             response = await active_agent.run(
                 user_prompt=user_input,
+                message_history=message_history,
                 deps=Deps(kpi_base_folder="./results")
             )
 
@@ -121,16 +132,16 @@ async def get_bot_response(user_input: str):
 
                     **Cost Impact:** {response.output.joining_bonus_coupon_cost_analysis}
 
-                    
+
                     ### 🧾 **Stamp Card Coupon**
-                    
+
                     {response.output.stamp_card_coupon}
 
                     **Why:** {response.output.stamp_card_coupon_reasoning}
 
                     **Cost Impact:** {response.output.stamp_card_coupon_cost_analysis}
 
-                    
+
                     ### 💌 **Miss You Coupon**
 
                     {response.output.miss_you_coupon}
@@ -139,12 +150,12 @@ async def get_bot_response(user_input: str):
 
                     **Cost Impact:** {response.output.miss_you_coupon_cost_analysis}
 
-                    
+
                     ### 💰 **Combined Cost Analysis**
 
                     {response.output.combined_cost_analysis}
                     """
-            else:
+            elif st.session_state.selected_agent == "creative":
                 formatted_response = f"""
                     ### 🎟️ **Coupon Recommendations**
                     {response.output.coupons}
@@ -159,7 +170,11 @@ async def get_bot_response(user_input: str):
                     {response.output.conversation}
                     """
 
-            messages.append(ModelResponse(parts=[TextPart(content=formatted_response)]))
+            else:
+                formatted_response = response.output
+
+            message_history = response.all_messages()
+
             return formatted_response
 
     except Exception as e:
@@ -185,14 +200,15 @@ if st.session_state.auto_query:
     st.session_state.messages.append({"role": "user", "content": user_input})
     bot_response = asyncio.run(get_bot_response(user_input))
     st.session_state.messages.append({"role": "assistant", "content": bot_response})
-    messages.append(ModelRequest(parts=[UserPromptPart(content=user_input)]))
-    messages.append(ModelResponse(parts=[TextPart(content=bot_response)]))
+
     st.rerun()
 
 # Handle direct user input
 user_input = st.chat_input("Ask Clink about your restaurant data...")
 
 if user_input:
+    st.session_state.selected_agent = "chat"
+
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.write(user_input)
@@ -202,5 +218,3 @@ if user_input:
         if "**Coupon Recommendations**" in bot_response:
             st.markdown("### 🎟️ Coupon Strategy Generated")
         st.markdown(bot_response)
-    messages.append(ModelRequest(parts=[UserPromptPart(content=user_input)]))
-    messages.append(ModelResponse(parts=[TextPart(content=bot_response)]))
