@@ -12,13 +12,21 @@ settings = Settings()
 
 logfire.configure(token=settings.logfire_key)
 
-model_name: OpenAIModelName = "gpt-4.1"
-
 openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
 
 logfire.instrument_openai(openai_client=openai_client)
 
-model = OpenAIModel(model_name=model_name, provider=OpenAIProvider(openai_client=openai_client))
+model_name: OpenAIModelName = "gpt-4.1"
+
+model : OpenAIModel = OpenAIModel(model_name=model_name, provider=OpenAIProvider(openai_client=openai_client))
+
+chat_model_name: OpenAIModelName = "gpt-4.1-mini"
+
+chat_model: OpenAIModel = OpenAIModel(model_name=chat_model_name, provider=OpenAIProvider(openai_client=openai_client))
+
+@dataclass
+class Deps:
+    kpi_base_folder: str
 
 model_settings = OpenAIModelSettings(
     temperature=0.1,
@@ -55,7 +63,8 @@ standard_coupon_agent = Agent(
         load_kpi_file,
         search_kpi_files,
         analyze_time_series_kpi
-    ]
+    ],
+    deps_type=Deps
 )
 
 logfire.instrument_pydantic_ai(standard_coupon_agent)
@@ -85,5 +94,39 @@ creative_coupon_agent = Agent(
 
 logfire.instrument_pydantic_ai(creative_coupon_agent)
 
+agent = Agent(
+    model=chat_model,
+    model_settings=model_settings,
+)
+
+@agent.tool()
+async def greet():
+    """A tool to greet the user when greeted or told goodbye"""
+
+    print("----waves at you----")
+
+
 messages: list[ModelMessage] = []
 
+if __name__ == "__main__":
+
+    import asyncio
+
+    deps = Deps(kpi_base_folder="./results")  # Set your KPI base folder path
+    
+    while True:
+        user_prompt = input("You: ")
+        
+        if user_prompt == "exit":
+            break
+        
+        result = asyncio.run(agent.run(user_prompt=user_prompt, message_history=messages, deps=deps))
+        
+        tool_name = result._output_tool_name
+
+        print(f"Tool: {tool_name}")
+
+        print("Clink: " + str(result.output))
+    
+        messages.append(ModelRequest(parts=[UserPromptPart(content=user_prompt)]))
+        messages.append(ModelResponse(parts=[TextPart(content=str(result.output))]))
