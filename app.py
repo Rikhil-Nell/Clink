@@ -78,31 +78,195 @@ if "selected_agent" not in st.session_state:
 if not st.session_state.messages:
     welcome_msg = {
         "role": "assistant",
-        "content": "👋 **Welcome to Clink!**"}
+        "content": "👋 **Welcome to Clink!** I'm here to help you analyze your restaurant data and generate effective coupon strategies. Use the sidebar buttons to get started or ask me directly about your KPIs!",
+        "agent_type": "chat"
+    }
     st.session_state.messages.append(welcome_msg)
+
+def format_coupon_content(content, section_title=""):
+    """Clean and format coupon content for better display"""
+    if not content:
+        return ""
+    
+    # Remove extra whitespace and clean up formatting
+    content = content.strip()
+    
+    # Split into lines and clean each line
+    lines = content.split('\n')
+    cleaned_lines = []
+    
+    for line in lines:
+        line = line.strip()
+        if line:
+            # Remove multiple asterisks and clean up markdown
+            line = line.replace('**Why:**', '\n**Why:**')
+            line = line.replace('**Cost Impact:**', '\n**Cost Impact:**')
+            cleaned_lines.append(line)
+    
+    return '\n'.join(cleaned_lines)
+
+def display_coupon_response(response_data):
+    """Display coupon response in a structured format"""
+    
+    # Joining Bonus Coupon
+    st.markdown("### 🎁 Joining Bonus Coupon")
+    
+    coupon_text = format_coupon_content(response_data.joining_bonus_coupon)
+    if coupon_text:
+        st.info(coupon_text)
+    
+    if response_data.joining_bonus_coupon_reasoning:
+        st.markdown("**Why:**")
+        st.write(response_data.joining_bonus_coupon_reasoning)
+    
+    if response_data.joining_bonus_coupon_cost_analysis:
+        st.markdown("**Cost Impact:**")
+        with st.expander("View Cost Analysis", expanded=False):
+            st.write(response_data.joining_bonus_coupon_cost_analysis)
+    
+    st.divider()
+    
+    # Stamp Card Coupon
+    st.markdown("### 🧾 Stamp Card Coupon")
+    
+    coupon_text = format_coupon_content(response_data.stamp_card_coupon)
+    if coupon_text:
+        st.info(coupon_text)
+    
+    if response_data.stamp_card_coupon_reasoning:
+        st.markdown("**Why:**")
+        st.write(response_data.stamp_card_coupon_reasoning)
+    
+    if response_data.stamp_card_coupon_cost_analysis:
+        st.markdown("**Cost Impact:**")
+        with st.expander("View Cost Analysis", expanded=False):
+            st.write(response_data.stamp_card_coupon_cost_analysis)
+    
+    st.divider()
+    
+    # Miss You Coupon
+    st.markdown("### 💌 Miss You Coupon")
+    
+    coupon_text = format_coupon_content(response_data.miss_you_coupon)
+    if coupon_text:
+        st.info(coupon_text)
+    
+    if response_data.miss_you_coupon_reasoning:
+        st.markdown("**Why:**")
+        st.write(response_data.miss_you_coupon_reasoning)
+    
+    if response_data.miss_you_coupon_cost_analysis:
+        st.markdown("**Cost Impact:**")
+        with st.expander("View Cost Analysis", expanded=False):
+            st.write(response_data.miss_you_coupon_cost_analysis)
+    
+    st.divider()
+    
+    # Combined Analysis
+    if response_data.combined_cost_analysis:
+        st.markdown("### 💰 Combined Cost Analysis")
+        with st.expander("View Combined Analysis", expanded=True):
+            st.write(response_data.combined_cost_analysis)
+
+def display_creative_coupon_response(response_data):
+    """Display creative coupon response in a structured format"""
+    
+    st.markdown("### 🎟️ Creative Coupon Recommendations")
+    if response_data.coupons:
+        st.markdown(response_data.coupons)
+    
+    if response_data.reasoning:
+        st.markdown("### 🧠 Strategic Reasoning")
+        with st.expander("View Strategic Reasoning", expanded=True):
+            st.write(response_data.reasoning)
+    
+    if response_data.cost:
+        st.markdown("### 💰 Cost & Impact Analysis")
+        with st.expander("View Cost Analysis", expanded=False):
+            st.write(response_data.cost)
+    
+    if response_data.conversation:
+        st.markdown("### 💬 Additional Insights")
+        st.write(response_data.conversation)
 
 def display_messages():
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             if message["role"] == "assistant":
-                content = message["content"]
-                if "**Coupon Recommendations**" in content or "coupons:" in content.lower():
-                    st.markdown("### 🎟️ Coupon Strategy Generated")
-                    st.markdown(content)
-                    if st.button("📥 Download Strategy", key=f"download_{hash(content)}"):
-                        st.download_button(
-                            label="Save as Text File",
-                            data=content,
-                            file_name=f"coupon_strategy_{int(time.time())}.txt",
-                            mime="text/plain"
-                        )
+                agent_type = message.get("agent_type", "chat")
+                
+                if agent_type == "standard" and hasattr(message.get("response_data"), 'joining_bonus_coupon'):
+                    st.markdown("## 🎟️ Standard Coupon Strategy")
+                    display_coupon_response(message["response_data"])
+                    
+                    # Download button
+                    full_content = f"""
+# Standard Coupon Strategy
+
+## 🎁 Joining Bonus Coupon
+{message["response_data"].joining_bonus_coupon}
+
+Why: {message["response_data"].joining_bonus_coupon_reasoning}
+
+Cost Impact: {message["response_data"].joining_bonus_coupon_cost_analysis}
+
+## 🧾 Stamp Card Coupon
+{message["response_data"].stamp_card_coupon}
+
+Why: {message["response_data"].stamp_card_coupon_reasoning}
+
+Cost Impact: {message["response_data"].stamp_card_coupon_cost_analysis}
+
+## 💌 Miss You Coupon
+{message["response_data"].miss_you_coupon}
+
+Why: {message["response_data"].miss_you_coupon_reasoning}
+
+Cost Impact: {message["response_data"].miss_you_coupon_cost_analysis}
+
+## 💰 Combined Cost Analysis
+{message["response_data"].combined_cost_analysis}
+"""
+                    st.download_button(
+                        label="📥 Download Strategy",
+                        data=full_content,
+                        file_name=f"standard_coupon_strategy_{int(time.time())}.txt",
+                        mime="text/plain"
+                    )
+                    
+                elif agent_type == "creative" and hasattr(message.get("response_data"), 'coupons'):
+                    st.markdown("## 🎲 Creative Coupon Strategy")
+                    display_creative_coupon_response(message["response_data"])
+                    
+                    # Download button
+                    full_content = f"""
+# Creative Coupon Strategy
+
+## 🎟️ Coupon Recommendations
+{message["response_data"].coupons}
+
+## 🧠 Strategic Reasoning
+{message["response_data"].reasoning}
+
+## 💰 Cost & Impact Analysis
+{message["response_data"].cost}
+
+## 💬 Additional Insights
+{message["response_data"].conversation}
+"""
+                    st.download_button(
+                        label="📥 Download Strategy",
+                        data=full_content,
+                        file_name=f"creative_coupon_strategy_{int(time.time())}.txt",
+                        mime="text/plain"
+                    )
                 else:
-                    st.markdown(content)
+                    # Regular chat response
+                    st.markdown(message["content"])
             else:
                 st.write(message["content"])
 
 async def get_bot_response(user_input: str):
-    
     global message_history
 
     try:
@@ -122,63 +286,14 @@ async def get_bot_response(user_input: str):
                 deps=Deps(kpi_base_folder="./results")
             )
 
-            if st.session_state.selected_agent == "standard":
-                formatted_response = f"""
-                    ### 🎁 **Joining Bonus Coupon**
-
-                    {response.output.joining_bonus_coupon}
-
-                    **Why:** {response.output.joining_bonus_coupon_reasoning}
-
-                    **Cost Impact:** {response.output.joining_bonus_coupon_cost_analysis}
-
-
-                    ### 🧾 **Stamp Card Coupon**
-
-                    {response.output.stamp_card_coupon}
-
-                    **Why:** {response.output.stamp_card_coupon_reasoning}
-
-                    **Cost Impact:** {response.output.stamp_card_coupon_cost_analysis}
-
-
-                    ### 💌 **Miss You Coupon**
-
-                    {response.output.miss_you_coupon}
-
-                    **Why:** {response.output.miss_you_coupon_reasoning}
-
-                    **Cost Impact:** {response.output.miss_you_coupon_cost_analysis}
-
-
-                    ### 💰 **Combined Cost Analysis**
-
-                    {response.output.combined_cost_analysis}
-                    """
-            elif st.session_state.selected_agent == "creative":
-                formatted_response = f"""
-                    ### 🎟️ **Coupon Recommendations**
-                    {response.output.coupons}
-
-                    ### 🧠 **Strategic Reasoning**
-                    {response.output.reasoning}
-
-                    ### 💰 **Cost & Impact Analysis**
-                    {response.output.cost}
-
-                    ### 💬 **Chat Response**
-                    {response.output.conversation}
-                    """
-
-            else:
-                formatted_response = response.output
-
             message_history = response.all_messages()
-
-            return formatted_response
+            
+            return response, st.session_state.selected_agent
 
     except Exception as e:
-        return f"❌ **Error:** {str(e)}\n\nPlease try again or check your data."
+        error_response = type('ErrorResponse', (), {})()
+        error_response.output = f"❌ **Error:** {str(e)}\n\nPlease try again or check your data."
+        return error_response, "error"
 
 # Main chat interface
 col1, col2 = st.columns([3, 1])
@@ -191,6 +306,18 @@ with col2:
         st.markdown("### 📊 Chat Stats")
         user_msgs = [m for m in st.session_state.messages if m["role"] == "user"]
         st.metric("Queries Made", len(user_msgs))
+        
+        # Show agent usage
+        agent_counts = {}
+        for msg in st.session_state.messages:
+            if msg["role"] == "assistant":
+                agent_type = msg.get("agent_type", "chat")
+                agent_counts[agent_type] = agent_counts.get(agent_type, 0) + 1
+        
+        if agent_counts:
+            st.markdown("### 🤖 Agent Usage")
+            for agent, count in agent_counts.items():
+                st.metric(f"{agent.title()} Agent", count)
 
 # Handle auto-query from sidebar
 if st.session_state.auto_query:
@@ -198,8 +325,29 @@ if st.session_state.auto_query:
     st.session_state.auto_query = None
 
     st.session_state.messages.append({"role": "user", "content": user_input})
-    bot_response = asyncio.run(get_bot_response(user_input))
-    st.session_state.messages.append({"role": "assistant", "content": bot_response})
+    
+    response, agent_type = asyncio.run(get_bot_response(user_input))
+    
+    if agent_type == "standard":
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": "Standard coupon strategy generated successfully!",
+            "response_data": response.output,
+            "agent_type": "standard"
+        })
+    elif agent_type == "creative":
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": "Creative coupon strategy generated successfully!",
+            "response_data": response.output,
+            "agent_type": "creative"
+        })
+    else:
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": response.output if hasattr(response, 'output') else str(response),
+            "agent_type": "chat"
+        })
 
     st.rerun()
 
@@ -212,9 +360,21 @@ if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.write(user_input)
-    bot_response = asyncio.run(get_bot_response(user_input))
-    st.session_state.messages.append({"role": "assistant", "content": bot_response})
+    
+    response, agent_type = asyncio.run(get_bot_response(user_input))
+    
+    if agent_type == "error":
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": response.output,
+            "agent_type": "chat"
+        })
+    else:
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": response.output if hasattr(response, 'output') else str(response),
+            "agent_type": "chat"
+        })
+    
     with st.chat_message("assistant"):
-        if "**Coupon Recommendations**" in bot_response:
-            st.markdown("### 🎟️ Coupon Strategy Generated")
-        st.markdown(bot_response)
+        st.markdown(response.output if hasattr(response, 'output') else str(response))

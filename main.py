@@ -38,10 +38,7 @@ chat_model: OpenAIModel = OpenAIModel(model_name=MODEL_NAME_CHAT, provider=OpenA
 # --- Shared Tools ---
 tools = [
     explore_kpi_structure,
-    list_kpi_files_by_category,
-    load_kpi_file,
-    search_kpi_files,
-    analyze_time_series_kpi
+    load_kpi_file
 ]
 
 
