@@ -2,6 +2,7 @@ from pydantic_ai import Agent
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelName, OpenAIModelSettings
 from pydantic_ai.messages import ModelMessage
+from pydantic_ai.mcp import MCPServer
 from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
 import logfire

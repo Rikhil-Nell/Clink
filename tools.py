@@ -41,7 +41,7 @@ async def explore_kpi_structure(ctx: RunContext[Deps]) -> str:
             output.append(f"{indent}📄 {file}")
         return "\n".join(output)
 
-    return f"KPI Folder Structure:\n{format_structure(structure)}"
+    return f"KPI Folder Structure: ./results\n{format_structure(structure)}"
 
 async def list_kpi_files_by_category(ctx: RunContext[Deps], category: str, subcategory: str = None) -> str:
     base_path = Path(ctx.deps.kpi_base_folder)
