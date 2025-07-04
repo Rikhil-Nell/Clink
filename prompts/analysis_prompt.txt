@@ -1,8 +1,18 @@
+You are a helpful data analysis bot, you are equiped with an mcp server 'run_python' which helps you run
+python code in a separate interpreter allowing you to perform data analysis without having to load all the data
+into your context window, also there a few caveats, it has a script executor enginer and not a jupter_kernel
+so when you call the tool again it will not retain the results/memory of what you executed earlier for example:
+You established a variable a = 10, in your first pass then if you try access it in the second pass like so print(a), it will
+not work, some logic for loading the dependencies, so every time you execute some code and get a result and you wish to build
+on top of it, you are to rewrite the imports and the declarations etc. again. All the values are in rupees.
+
+when asked to "execute analysis" you are to always run this script using run python mcp server, make sure to not make any changes as its a critical step:
+
 import pandas as pd
 import numpy as np
 import json
 import sys
-import requests # Import requests
+from pyodide.http import pyfetch
 from io import StringIO
 import asyncio
 
@@ -16,22 +26,15 @@ CONFIG = {
     "peak_hours_threshold": 0.1  # minimum 10% of orders to be peak hour
 }
 
-# Modified to use requests for a standard Python environment
 async def load_csv_from_url(url):
-    """Load CSV from HTTP server using requests (synchronous, but wrapped for async context)"""
-    try:
-        # Use a thread pool executor to run the synchronous requests call without blocking the event loop
-        # This is a common pattern when mixing synchronous I/O with asyncio
-        loop = asyncio.get_running_loop()
-        response = await loop.run_in_executor(None, lambda: requests.get(url))
-
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
-        csv_text = response.text
-        csv_data = StringIO(csv_text)
-        df = pd.read_csv(csv_data)
-        return df
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Failed to load data from {url}: {str(e)}")
+    """Load CSV from HTTP server using pyfetch"""
+    response = await pyfetch(url)
+    if not response.ok:
+        raise Exception(f"HTTP {response.status}: {response.status_text}")
+    csv_text = await response.string()
+    csv_data = StringIO(csv_text)
+    df = pd.read_csv(csv_data)
+    return df
 
 async def analyze_order_kpis(base_url):
     """Main analysis function for order-facing KPIs"""
@@ -208,9 +211,9 @@ async def analyze_order_kpis(base_url):
     # --- FINAL SUMMARY ---
     final_summary = {
         "data_sources": {
-            "invoice_data": f"{base_url}/order_analysis/Invoice_Aggregation.csv",
-            "lift_analysis": f"{base_url}/order_analysis/Item_Pair_Lift_Analysis.csv",
-            "cooccurrence_matrix": f"{base_url}/order_analysis/Product_Co_occurrence_Top30.csv"
+            "invoice_data": f"{base_url}/Invoice_Aggregation.csv",
+            "lift_analysis": f"{base_url}/Item_Pair_Lift_Analysis.csv",
+            "cooccurrence_matrix": f"{base_url}/Product_Co_occurrence_Top30.csv"
         },
         "analysis_timestamp": pd.Timestamp.now().isoformat(),
         "analysis_config": CONFIG,
@@ -230,14 +233,8 @@ async def main():
         base_url = sys.argv[1]
     
     summary_json = await analyze_order_kpis(base_url)
-
-    with open("order_kpis_summary.json", 'w') as f:
-            f.write(summary_json)
-            print(f"Analysis summary successfully exported to order_kpis_summary.json")
-    
     print(summary_json)
 
 # Execute the analysis
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())

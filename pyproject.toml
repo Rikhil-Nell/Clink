@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "dash>=3.0.4",
     "ipykernel>=6.29.5",
+    "jupytext>=1.17.2",
     "logfire>=3.18.0",
     "matplotlib>=3.10.3",
     "nbformat>=5.10.4",
