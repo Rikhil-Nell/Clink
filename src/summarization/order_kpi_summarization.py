@@ -189,7 +189,7 @@ class OrderAnalysisSummarizer:
         
         return insights
     
-def run_summarization(invoice_df: pd.DataFrame, cooc_matrix: pd.DataFrame):
+def run_order_summarization(invoice_df: pd.DataFrame, cooc_matrix: pd.DataFrame):
     config = AnalysisConfig()
     summarizer = OrderAnalysisSummarizer(config=config)
 
@@ -213,7 +213,7 @@ def run_summarization(invoice_df: pd.DataFrame, cooc_matrix: pd.DataFrame):
 
     summary_json = json.dumps(summary, indent=2)
 
-    with open("order_kpis_summary.json", 'w') as f:
+    with open("summary_json/order_kpis_summary.json", 'w') as f:
         f.write(summary_json)
 
     return summary

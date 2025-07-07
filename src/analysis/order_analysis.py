@@ -79,25 +79,13 @@ class OrderAnalyzer:
         return filtered_matrix
 
 
-def run_analysis(file_or_buffer):
+def run_order_analysis(df: pd.DataFrame):
     """
     Main orchestrator function for Streamlit compatibility.
     - Loads data from file path or file-like object (csv/xlsx).
     - Cleans data.
     - Returns (invoice_kpis_df, cooccurrence_matrix_df).
     """
-    
-    # Handle file type
-    if hasattr(file_or_buffer, 'name') and file_or_buffer.name.endswith('.xlsx'):
-        df = pd.read_excel(file_or_buffer, parse_dates=['date'])
-    elif isinstance(file_or_buffer, str):
-        # If it's a file path string
-        if file_or_buffer.endswith('.xlsx'):
-            df = pd.read_excel(file_or_buffer, parse_dates=['date'])
-        else:
-            df = pd.read_csv(file_or_buffer, parse_dates=['date'])
-    else:
-        df = pd.read_csv(file_or_buffer, parse_dates=['date'])
    
     # Preprocess data
     df = DataLoader.preprocess_raw_data(df)
@@ -134,7 +122,7 @@ if __name__ == "__main__":
     else:
         try:
             # Pass the file path directly instead of opening in text mode
-            invoice_df, cooc_matrix_df = run_analysis(str(data_file))
+            invoice_df, cooc_matrix_df = run_order_analysis(str(data_file))
             print("Analysis completed successfully!")
             print(f"Invoice aggregation shape: {invoice_df.shape}")
             print(f"Co-occurrence matrix shape: {cooc_matrix_df.shape}")

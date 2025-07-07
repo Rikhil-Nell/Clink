@@ -206,6 +206,47 @@ wheels = [
 ]
 
 [[package]]
+name = "clink"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "dash" },
+    { name = "ddgs" },
+    { name = "ipykernel" },
+    { name = "jupytext" },
+    { name = "logfire" },
+    { name = "matplotlib" },
+    { name = "nbformat" },
+    { name = "openpyxl" },
+    { name = "pandas" },
+    { name = "plotly" },
+    { name = "pydantic-ai" },
+    { name = "pydantic-settings" },
+    { name = "scikit-learn" },
+    { name = "seaborn" },
+    { name = "streamlit" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "dash", specifier = ">=3.0.4" },
+    { name = "ddgs", specifier = ">=9.0.0" },
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "jupytext", specifier = ">=1.17.2" },
+    { name = "logfire", specifier = ">=3.18.0" },
+    { name = "matplotlib", specifier = ">=3.10.3" },
+    { name = "nbformat", specifier = ">=5.10.4" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "plotly", specifier = ">=6.1.2" },
+    { name = "pydantic-ai", specifier = ">=0.2.14" },
+    { name = "pydantic-settings", specifier = ">=2.9.1" },
+    { name = "scikit-learn", specifier = ">=1.6.1" },
+    { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "streamlit", specifier = ">=1.45.1" },
+]
+
+[[package]]
 name = "cohere"
 version = "5.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1114,47 +1155,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/34/38/6bc1ee13d73f2ca80e8dd172aee408d5699fd89eb00b5a0f3b0a96632a40/mistralai-1.8.2.tar.gz", hash = "sha256:3a2fdf35498dd71cca3ee065adf8d75331f3bc6bbfbc7ffdd20dc82ae01d9d6d", size = 176102, upload-time = "2025-06-10T17:31:11.935Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/85/088e4ec778879d8d3d4aa83549444c39f639d060422a6ef725029e8cfc9d/mistralai-1.8.2-py3-none-any.whl", hash = "sha256:d7f2c3c9d02475c1f1911cff2458bd01e91bbe8e15bfb57cb7ac397a9440ef8e", size = 374066, upload-time = "2025-06-10T17:31:10.461Z" },
-]
-
-[[package]]
-name = "mom-analysis"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "dash" },
-    { name = "ddgs" },
-    { name = "ipykernel" },
-    { name = "jupytext" },
-    { name = "logfire" },
-    { name = "matplotlib" },
-    { name = "nbformat" },
-    { name = "openpyxl" },
-    { name = "pandas" },
-    { name = "plotly" },
-    { name = "pydantic-ai" },
-    { name = "pydantic-settings" },
-    { name = "scikit-learn" },
-    { name = "seaborn" },
-    { name = "streamlit" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "dash", specifier = ">=3.0.4" },
-    { name = "ddgs", specifier = ">=9.0.0" },
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "jupytext", specifier = ">=1.17.2" },
-    { name = "logfire", specifier = ">=3.18.0" },
-    { name = "matplotlib", specifier = ">=3.10.3" },
-    { name = "nbformat", specifier = ">=5.10.4" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "plotly", specifier = ">=6.1.2" },
-    { name = "pydantic-ai", specifier = ">=0.2.14" },
-    { name = "pydantic-settings", specifier = ">=2.9.1" },
-    { name = "scikit-learn", specifier = ">=1.6.1" },
-    { name = "seaborn", specifier = ">=0.13.2" },
-    { name = "streamlit", specifier = ">=1.45.1" },
 ]
 
 [[package]]
