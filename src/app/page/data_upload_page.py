@@ -97,7 +97,7 @@ def show_overview():
                 customer_count = overview['customer_insights'].get('customer_count', 0)
                 if customer_count >=50:
                     st.success(f"✅ **Customer Data Requirement - Succeeded**: Found {customer_count} customer phone entries.")
-                if 50 > customer_count:
+                elif 50 > customer_count:
                     st.warning(f"⚠️ **Customer Data Requirement - Failed**: Found {customer_count} customer phone entries, but need at least 50 for customer analysis. Order-level analysis will be unavailable.")
                 else:
                     st.warning("⚠️ **No Customer Data** - Customer phone numbers are missing. Only order-level analysis will be available.")

@@ -1,23 +1,47 @@
 ```
-📁 MoM-Analysis
+📁 Clink
+    📁 .vscode
+        ─ launch.json
+    📁 archive
+        ─ agents.py
+        ─ app.py
+        ─ test.py
+        ─ websearch.py
     📁 src
+        📁 agents
+            ─ __init__.py
+            ─ factory.py
+            ─ prompts.py
+            ─ schemas.py
         📁 analysis
             📁 notebooks
                 ─ customer_analysis.ipynb
                 ─ order_analysis.ipynb
                 ─ product_analysis.ipynb
+            ─ __init__.py
             ─ customer_analysis.py
             ─ order_analysis.py
             ─ product_analysis.py
+        📁 app
+            📁 page
+                ─ coupon_generation_page.py
+                ─ data_upload_page.py
+                ─ kpi_analysis_page.py
+            📁 utils
+                ─ overview.py
+                ─ session.py
+                ─ styling.py
+            ─ __init__.py
+            ─ app.py
         📁 prompts
-            📁 analysis summary prompts
-                ─ customer_analysis_summary_prompt.txt
-                ─ order_analysis_summary_prompt.txt
-                ─ product_analysis_summary_prompt.txt
-            📁 standard coupon prompts
-                ─ customer_standard_coupon.txt
-                ─ order_standard_coupon.txt
-                ─ product _standard_coupon.txt
+            📁 analysis_summary
+                ─ customer_prompt.txt
+                ─ order_prompt.txt
+                ─ product_prompt.txt
+            📁 standard_coupon
+                ─ customer_prompt.txt
+                ─ order_prompt.txt
+                ─ product_prompt.txt
             ─ chat.txt
             ─ creative_coupon.txt
         📁 results
@@ -43,22 +67,23 @@
                     ─ Yearly_Product_Performance.csv
                     ─ Yearly_Top_Selling_Items.csv
         📁 summarization
+            ─ __init__.py
             ─ customer_kpi_summarization.py
-            ─ order_kpis_summarization.py
+            ─ order_kpi_summarization.py
             ─ product_kpi_summarization.py
         📁 test data
             ─ Year Order Item Data.csv
             ─ Year Order Item Data.txt
             ─ Year Order Item Data.xlsx
         📁 utils
+            ─ __init__.py
             ─ data_loader.py
         ─ __init__.py
-        ─ agents.py
-        ─ app.py
         ─ config.py
         ─ settings.py
-        ─ test.py
-        ─ tools.py
+    📁 summary_json
+        ─ customer_kpis_summary.json
+        ─ order_kpis_summary.json
     ─ .env
     ─ .gitignore
     ─ .python-version
