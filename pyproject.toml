@@ -1,16 +1,18 @@
 [project]
-name = "mom-analysis"
+name = "Clink"
 version = "0.1.0"
-description = "Add your description here"
+description = "Data-driven coupon strategies for Indian restaurants"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "dash>=3.0.4",
+    "ddgs>=9.0.0",
     "ipykernel>=6.29.5",
     "jupytext>=1.17.2",
     "logfire>=3.18.0",
     "matplotlib>=3.10.3",
     "nbformat>=5.10.4",
+    "openpyxl>=3.1.5",
     "pandas>=2.2.3",
     "plotly>=6.1.2",
     "pydantic-ai>=0.2.14",

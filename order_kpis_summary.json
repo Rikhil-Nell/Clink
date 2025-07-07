@@ -1,53 +1,47 @@
 {
-  "data_sources": {
-    "invoice_data": "http://localhost:8000/order_analysis/Invoice_Aggregation.csv",
-    "lift_analysis": "http://localhost:8000/order_analysis/Item_Pair_Lift_Analysis.csv",
-    "cooccurrence_matrix": "http://localhost:8000/order_analysis/Product_Co_occurrence_Top30.csv"
-  },
-  "analysis_timestamp": "2025-07-03T21:12:03.782758",
+  "analysis_timestamp": "2025-07-07T16:10:21.870275",
   "analysis_config": {
     "min_pair_support": 5,
     "min_item_support": 20,
     "top_n_items": 30,
     "high_value_percentile": 0.8,
-    "min_lift_threshold": 1.1,
     "peak_hours_threshold": 0.1
   },
   "invoice_analysis": {
-    "total_orders": 11367,
-    "total_revenue": 3384961.82,
-    "total_items_sold": 18664,
-    "average_order_value": 297.79,
+    "total_orders": 11201,
+    "total_revenue": 3329084.93,
+    "total_items_sold": 18320,
+    "average_order_value": 297.21,
     "average_items_per_order": 1.64,
     "order_value_distribution": {
-      "mean": 297.79,
-      "std": 176.92,
-      "min": -180.0,
+      "mean": 297.21,
+      "std": 176.47,
+      "min": 128.57,
       "25%": 166.67,
       "50%": 228.57,
       "75%": 380.96,
       "max": 2435.38
     },
     "high_value_orders": {
-      "count": 2297,
-      "percentage": 20.21,
+      "count": 2248,
+      "percentage": 20.07,
       "threshold": 419.04
     },
     "basket_size_analysis": {
-      "avg_unique_items": 1.37,
+      "avg_unique_items": 1.36,
       "min_items": 1,
       "max_items": 6,
       "most_common_basket_size": 1
     },
     "temporal_patterns": {
       "day_of_week_distribution": {
-        "Sunday": 3327,
-        "Saturday": 2054,
-        "Thursday": 1288,
-        "Friday": 1233,
-        "Wednesday": 1212,
-        "Monday": 1210,
-        "Tuesday": 1043
+        "Sunday": 3302,
+        "Saturday": 2025,
+        "Thursday": 1266,
+        "Friday": 1212,
+        "Monday": 1188,
+        "Wednesday": 1187,
+        "Tuesday": 1021
       },
       "peak_days": [
         "Sunday",
@@ -61,253 +55,104 @@
           17,
           18,
           19,
-          20,
-          21
+          20
         ],
         "hourly_distribution": {
           "10": 10,
-          "11": 168,
-          "12": 394,
-          "13": 642,
-          "14": 1011,
-          "15": 1215,
-          "16": 1327,
-          "17": 1261,
-          "18": 1181,
-          "19": 1198,
-          "20": 1153,
-          "21": 1138,
-          "22": 656,
-          "23": 13
+          "11": 162,
+          "12": 391,
+          "13": 636,
+          "14": 999,
+          "15": 1204,
+          "16": 1316,
+          "17": 1253,
+          "18": 1173,
+          "19": 1186,
+          "20": 1133,
+          "21": 1115,
+          "22": 611,
+          "23": 12
         }
       }
     }
-  },
-  "lift_analysis": {
-    "total_item_pairs_analyzed": 251,
-    "significant_pairs_found": 65,
-    "min_lift_threshold": 1.1,
-    "min_support_threshold": 5,
-    "top_lift_pairs": [
-      {
-        "item_1": "Chilli Guava Cooler",
-        "item_2": "Waffle",
-        "lift": 29.236,
-        "co_occurrence_count": 5,
-        "interpretation": "Customers who buy Chilli Guava Cooler are 29.2x more likely to also buy Waffle"
-      },
-      {
-        "item_1": "Oreo Banana Shake (Milkshake)",
-        "item_2": "Strawberry Banana Shake (Milkshake)",
-        "lift": 12.546,
-        "co_occurrence_count": 6,
-        "interpretation": "Customers who buy Oreo Banana Shake (Milkshake) are 12.5x more likely to also buy Strawberry Banana Shake (Milkshake)"
-      },
-      {
-        "item_1": "Belgium Dark Chocolate Brownie Shake (Thickshake)",
-        "item_2": "Nutella Brownie Shake (Thickshake)",
-        "lift": 11.378,
-        "co_occurrence_count": 11,
-        "interpretation": "Customers who buy Belgium Dark Chocolate Brownie Shake (Thickshake) are 11.4x more likely to also buy Nutella Brownie Shake (Thickshake)"
-      },
-      {
-        "item_1": "Mango Shake (Thickshake)",
-        "item_2": "Strawberry Banana Shake (Milkshake)",
-        "lift": 9.18,
-        "co_occurrence_count": 5,
-        "interpretation": "Customers who buy Mango Shake (Thickshake) are 9.2x more likely to also buy Strawberry Banana Shake (Milkshake)"
-      },
-      {
-        "item_1": "Belgium Dark Chocolate Shake (Thickshake)",
-        "item_2": "Hazelnut Shake (Thickshake)",
-        "lift": 9.021,
-        "co_occurrence_count": 5,
-        "interpretation": "Customers who buy Belgium Dark Chocolate Shake (Thickshake) are 9.0x more likely to also buy Hazelnut Shake (Thickshake)"
-      },
-      {
-        "item_1": "Belgium Dark Chocolate Shake (Thickshake)",
-        "item_2": "Nutella Brownie Shake (Thickshake)",
-        "lift": 7.655,
-        "co_occurrence_count": 7,
-        "interpretation": "Customers who buy Belgium Dark Chocolate Shake (Thickshake) are 7.7x more likely to also buy Nutella Brownie Shake (Thickshake)"
-      },
-      {
-        "item_1": "Blackcurrent Shake (Milkshake)",
-        "item_2": "Dry Fruit Shake (Milkshake)",
-        "lift": 7.496,
-        "co_occurrence_count": 8,
-        "interpretation": "Customers who buy Blackcurrent Shake (Milkshake) are 7.5x more likely to also buy Dry Fruit Shake (Milkshake)"
-      },
-      {
-        "item_1": "Dry Fruit Shake (Milkshake)",
-        "item_2": "Kulfi Nuts Shake (Milkshake)",
-        "lift": 5.456,
-        "co_occurrence_count": 11,
-        "interpretation": "Customers who buy Dry Fruit Shake (Milkshake) are 5.5x more likely to also buy Kulfi Nuts Shake (Milkshake)"
-      },
-      {
-        "item_1": "Chilli Pineapple",
-        "item_2": "Classic Lemonade",
-        "lift": 5.029,
-        "co_occurrence_count": 8,
-        "interpretation": "Customers who buy Chilli Pineapple are 5.0x more likely to also buy Classic Lemonade"
-      },
-      {
-        "item_1": "Cookest N Cream Shake (Milkshake)",
-        "item_2": "Kitkat Shake",
-        "lift": 4.404,
-        "co_occurrence_count": 5,
-        "interpretation": "Customers who buy Cookest N Cream Shake (Milkshake) are 4.4x more likely to also buy Kitkat Shake"
-      },
-      {
-        "item_1": "Chilli Guava",
-        "item_2": "Strawberry Cooler",
-        "lift": 4.177,
-        "co_occurrence_count": 10,
-        "interpretation": "Customers who buy Chilli Guava are 4.2x more likely to also buy Strawberry Cooler"
-      },
-      {
-        "item_1": "Blue Curacao",
-        "item_2": "Lemonade",
-        "lift": 3.947,
-        "co_occurrence_count": 5,
-        "interpretation": "Customers who buy Blue Curacao are 3.9x more likely to also buy Lemonade"
-      },
-      {
-        "item_1": "Chilli Guava",
-        "item_2": "Classic Lemonade",
-        "lift": 3.531,
-        "co_occurrence_count": 18,
-        "interpretation": "Customers who buy Chilli Guava are 3.5x more likely to also buy Classic Lemonade"
-      },
-      {
-        "item_1": "Blue Curacao",
-        "item_2": "Strawberry Cooler",
-        "lift": 3.477,
-        "co_occurrence_count": 34,
-        "interpretation": "Customers who buy Blue Curacao are 3.5x more likely to also buy Strawberry Cooler"
-      },
-      {
-        "item_1": "Coffee Shake (Milkshake)",
-        "item_2": "Dry Fruit Shake (Milkshake)",
-        "lift": 3.373,
-        "co_occurrence_count": 6,
-        "interpretation": "Customers who buy Coffee Shake (Milkshake) are 3.4x more likely to also buy Dry Fruit Shake (Milkshake)"
-      },
-      {
-        "item_1": "Dry Fruit Shake (Milkshake)",
-        "item_2": "Kulfi Shake (Milkshake)",
-        "lift": 3.212,
-        "co_occurrence_count": 6,
-        "interpretation": "Customers who buy Dry Fruit Shake (Milkshake) are 3.2x more likely to also buy Kulfi Shake (Milkshake)"
-      },
-      {
-        "item_1": "Classic Lemonade",
-        "item_2": "Strawberry Cooler",
-        "lift": 3.153,
-        "co_occurrence_count": 22,
-        "interpretation": "Customers who buy Classic Lemonade are 3.2x more likely to also buy Strawberry Cooler"
-      },
-      {
-        "item_1": "Belgium Dark Chocolate Brownie Shake (Milkshake)",
-        "item_2": "Nutella Brownie Shake (Milkshake)",
-        "lift": 2.898,
-        "co_occurrence_count": 16,
-        "interpretation": "Customers who buy Belgium Dark Chocolate Brownie Shake (Milkshake) are 2.9x more likely to also buy Nutella Brownie Shake (Milkshake)"
-      },
-      {
-        "item_1": "Blue Curacao",
-        "item_2": "Classic Lemonade",
-        "lift": 2.785,
-        "co_occurrence_count": 58,
-        "interpretation": "Customers who buy Blue Curacao are 2.8x more likely to also buy Classic Lemonade"
-      },
-      {
-        "item_1": "Choco Oreo Shake (Milkshake)",
-        "item_2": "Kitkat Shake",
-        "lift": 2.672,
-        "co_occurrence_count": 15,
-        "interpretation": "Customers who buy Choco Oreo Shake (Milkshake) are 2.7x more likely to also buy Kitkat Shake"
-      }
-    ]
   },
   "cooccurrence_analysis": {
     "analysis_scope": "Top 30 most popular items",
     "items_in_matrix": 30,
     "strongest_cooccurrences": [
       {
-        "item_1": 0,
-        "item_2": 2,
+        "item_1": "Cold Coffee",
+        "item_2": "Waffles",
         "count": 95
       },
       {
-        "item_1": 0,
-        "item_2": 3,
+        "item_1": "Cold Coffee",
+        "item_2": "Strawberry Shake (Milkshake)",
         "count": 69
       },
       {
-        "item_1": 2,
-        "item_2": 14,
+        "item_1": "Strawberry Shake (Milkshake)",
+        "item_2": "Blackcurrant Shake (Milkshake)",
         "count": 64
       },
       {
-        "item_1": 5,
-        "item_2": 9,
+        "item_1": "Blue Curacao",
+        "item_2": "Classic Lemonade",
         "count": 58
       },
       {
-        "item_1": 0,
-        "item_2": 6,
+        "item_1": "Cold Coffee",
+        "item_2": "Blue Curacao",
         "count": 55
       },
       {
-        "item_1": 2,
-        "item_2": 4,
+        "item_1": "Strawberry Shake (Milkshake)",
+        "item_2": "Chocolate Shake (Milkshake)",
         "count": 52
       },
       {
-        "item_1": 1,
-        "item_2": 3,
+        "item_1": "Waffles",
+        "item_2": "Strawberry Shake (Milkshake)",
         "count": 50
       },
       {
-        "item_1": 0,
-        "item_2": 8,
+        "item_1": "Cold Coffee",
+        "item_2": "Cad-b",
         "count": 45
       },
       {
-        "item_1": 0,
-        "item_2": 9,
+        "item_1": "Cold Coffee",
+        "item_2": "Classic Lemonade",
         "count": 45
       },
       {
-        "item_1": 1,
-        "item_2": 4,
+        "item_1": "Waffles",
+        "item_2": "Chocolate Shake (Milkshake)",
         "count": 38
       },
       {
-        "item_1": 2,
-        "item_2": 5,
+        "item_1": "Strawberry Shake (Milkshake)",
+        "item_2": "Mango Shake (Milkshake)",
         "count": 37
       },
       {
-        "item_1": 2,
-        "item_2": 10,
+        "item_1": "Strawberry Shake (Milkshake)",
+        "item_2": "Wonder Vanilla Shake (Milkshake)",
         "count": 36
       },
       {
-        "item_1": 0,
-        "item_2": 4,
+        "item_1": "Cold Coffee",
+        "item_2": "Chocolate Shake (Milkshake)",
         "count": 35
       },
       {
-        "item_1": 5,
-        "item_2": 22,
+        "item_1": "Blue Curacao",
+        "item_2": "Strawberry Cooler",
         "count": 34
       },
       {
-        "item_1": 0,
-        "item_2": 11,
+        "item_1": "Cold Coffee",
+        "item_2": "Belgium Dark Chocolate Shake (Milkshake)",
         "count": 30
       }
     ],
@@ -320,82 +165,116 @@
     "bundle_opportunities": [
       {
         "bundle_items": [
-          "Chilli Guava Cooler",
-          "Waffle"
+          "Cold Coffee",
+          "Waffles"
         ],
-        "statistical_strength": "Lift: 29.24",
-        "frequency": "Appears together in 5 orders",
+        "statistical_strength": "Co-occurrence: 95 times",
+        "frequency": "Appears together in 95 orders",
         "recommendation": "Strong candidate for bundle pricing or combo offers"
       },
       {
         "bundle_items": [
-          "Oreo Banana Shake (Milkshake)",
-          "Strawberry Banana Shake (Milkshake)"
+          "Cold Coffee",
+          "Strawberry Shake (Milkshake)"
         ],
-        "statistical_strength": "Lift: 12.55",
-        "frequency": "Appears together in 6 orders",
+        "statistical_strength": "Co-occurrence: 69 times",
+        "frequency": "Appears together in 69 orders",
         "recommendation": "Strong candidate for bundle pricing or combo offers"
       },
       {
         "bundle_items": [
-          "Belgium Dark Chocolate Brownie Shake (Thickshake)",
-          "Nutella Brownie Shake (Thickshake)"
+          "Strawberry Shake (Milkshake)",
+          "Blackcurrant Shake (Milkshake)"
         ],
-        "statistical_strength": "Lift: 11.38",
-        "frequency": "Appears together in 11 orders",
+        "statistical_strength": "Co-occurrence: 64 times",
+        "frequency": "Appears together in 64 orders",
         "recommendation": "Strong candidate for bundle pricing or combo offers"
       },
       {
         "bundle_items": [
-          "Mango Shake (Thickshake)",
-          "Strawberry Banana Shake (Milkshake)"
+          "Blue Curacao",
+          "Classic Lemonade"
         ],
-        "statistical_strength": "Lift: 9.18",
-        "frequency": "Appears together in 5 orders",
+        "statistical_strength": "Co-occurrence: 58 times",
+        "frequency": "Appears together in 58 orders",
         "recommendation": "Strong candidate for bundle pricing or combo offers"
       },
       {
         "bundle_items": [
-          "Belgium Dark Chocolate Shake (Thickshake)",
-          "Hazelnut Shake (Thickshake)"
+          "Cold Coffee",
+          "Blue Curacao"
         ],
-        "statistical_strength": "Lift: 9.02",
-        "frequency": "Appears together in 5 orders",
+        "statistical_strength": "Co-occurrence: 55 times",
+        "frequency": "Appears together in 55 orders",
         "recommendation": "Strong candidate for bundle pricing or combo offers"
       }
     ],
     "cross_sell_recommendations": [
       {
-        "trigger_item": 0,
-        "suggest_item": 2,
+        "trigger_item": "Cold Coffee",
+        "suggest_item": "Waffles",
         "frequency": "Bought together 95 times",
         "strategy": "Suggest as add-on during ordering"
       },
       {
-        "trigger_item": 0,
-        "suggest_item": 3,
+        "trigger_item": "Cold Coffee",
+        "suggest_item": "Strawberry Shake (Milkshake)",
         "frequency": "Bought together 69 times",
         "strategy": "Suggest as add-on during ordering"
       },
       {
-        "trigger_item": 2,
-        "suggest_item": 14,
+        "trigger_item": "Strawberry Shake (Milkshake)",
+        "suggest_item": "Blackcurrant Shake (Milkshake)",
         "frequency": "Bought together 64 times",
         "strategy": "Suggest as add-on during ordering"
       },
       {
-        "trigger_item": 5,
-        "suggest_item": 9,
+        "trigger_item": "Blue Curacao",
+        "suggest_item": "Classic Lemonade",
         "frequency": "Bought together 58 times",
         "strategy": "Suggest as add-on during ordering"
       },
       {
-        "trigger_item": 0,
-        "suggest_item": 6,
+        "trigger_item": "Cold Coffee",
+        "suggest_item": "Blue Curacao",
         "frequency": "Bought together 55 times",
+        "strategy": "Suggest as add-on during ordering"
+      },
+      {
+        "trigger_item": "Strawberry Shake (Milkshake)",
+        "suggest_item": "Chocolate Shake (Milkshake)",
+        "frequency": "Bought together 52 times",
+        "strategy": "Suggest as add-on during ordering"
+      },
+      {
+        "trigger_item": "Waffles",
+        "suggest_item": "Strawberry Shake (Milkshake)",
+        "frequency": "Bought together 50 times",
+        "strategy": "Suggest as add-on during ordering"
+      },
+      {
+        "trigger_item": "Cold Coffee",
+        "suggest_item": "Cad-b",
+        "frequency": "Bought together 45 times",
         "strategy": "Suggest as add-on during ordering"
       }
     ],
-    "inventory_insights": []
+    "inventory_insights": [
+      {
+        "insight_type": "high_value_correlation",
+        "description": "Orders above $419.04 represent high-value customers",
+        "action": "Ensure availability of items that appear in high-value orders"
+      },
+      {
+        "insight_type": "basket_optimization",
+        "description": "Average order value is $297.21",
+        "action": "Focus on items that appear in the strongest co-occurrence pairs to drive basket size"
+      },
+      {
+        "insight_type": "top_pair_priority",
+        "description": "'Cold Coffee' and 'Waffles' are bought together 95 times",
+        "action": "Maintain optimal stock levels for both items to avoid losing combo sales"
+      }
+    ]
   }
 }
