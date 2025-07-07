@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-import json
-from utils.session import check_data_uploaded, check_customer_data_validity
+from src.app.utils.session import check_data_uploaded, check_customer_data_validity
 from src.summarization.customer_kpi_summarization import run_customer_summarization
 from src.summarization.order_kpi_summarization import run_order_summarization
 
