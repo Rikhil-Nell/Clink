@@ -3,10 +3,10 @@ import pandas as pd
 
 # 1. Import custom modules
 from src.app.utils.styling import apply_custom_styles
-from src.app.utils.session import initialize_session_state, validate_customer_data
+from src.app.utils.session import initialize_session_state
 from src.app.page.data_upload_page import render_data_upload_page
 from src.app.page.kpi_analysis_page import render_kpi_analysis_page
-# from src.app.pages.coupon_generation_page import render_coupon_generation_page
+from src.app.page.coupon_generation_page import render_coupon_generation_page
 
 def main():    # 2. Streamlit page config and styling
     st.set_page_config(
@@ -38,9 +38,9 @@ def main():    # 2. Streamlit page config and styling
         # Handles KPI summarization and visualization
         render_kpi_analysis_page()
 
-    # elif page == "🎯 Coupon Generation":
-    #     # Handles coupon strategy preview (future: agentic logic)
-    #     render_coupon_generation_page()
+    elif page == "🎯 Coupon Generation":
+        # Handles coupon strategy preview (future: agentic logic)
+        render_coupon_generation_page()
 
     # 6. Footer (optional, can be moved to a utils/footer.py if desired)
     st.markdown("---")

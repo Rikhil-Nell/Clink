@@ -11,8 +11,9 @@ class AppSettings(BaseSettings):
     openai_api_key: str = Field(..., env="OPENAI_API_KEY")
 
     # Model Configuration
-    analysis_model_name: OpenAIModelName = "gpt-4-turbo"
-    coupon_model_name: OpenAIModelName = "gpt-4-turbo"
+    analysis_model_name: OpenAIModelName = "gpt-4.1"
+    coupon_model_name: OpenAIModelName = "gpt-4.1"
+    chat_model_name: OpenAIModelName = "gpt-4.1-mini"
     model_temperature: float = 0.1
     model_top_p: float = 0.95
 

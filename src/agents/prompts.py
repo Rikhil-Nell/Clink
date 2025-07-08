@@ -11,7 +11,7 @@ def get_prompt(agent_type: str, category: str) -> str:
     Returns:
         The content of the prompt file as a string.
     """
-    prompt_file = Path(f"prompts/{agent_type}/{category}_prompt.txt")
+    prompt_file = Path(f"src/prompts/{agent_type}/{category}_prompt.txt")
     if not prompt_file.exists():
         raise FileNotFoundError(f"Prompt file not found at: {prompt_file}")
     

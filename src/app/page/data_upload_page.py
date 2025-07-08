@@ -7,7 +7,7 @@ import numpy as np
 from src.analysis.order_analysis import run_order_analysis
 from src.analysis.customer_analysis import run_customer_analysis
 
-from src.app.utils.session import reset_analysis_state, validate_customer_data, check_data_uploaded
+from src.app.utils.session import reset_analysis_state, validate_customer_data, check_data_uploaded, reset_coupon_state
 from src.app.utils.overview import generate_data_overview
 
 def handle_file_upload():
@@ -19,6 +19,7 @@ def handle_file_upload():
     if uploaded_file is not None:
         if st.session_state.uploaded_file != uploaded_file:
             reset_analysis_state()
+            reset_coupon_state()  # Add this line
             st.session_state.uploaded_file = uploaded_file
             try:
                 if uploaded_file.name.endswith('.csv'):
@@ -53,6 +54,7 @@ def run_analysis(uploaded_file):
                 st.session_state.customer_analysis_results = customer_analysis_results
                 progress_bar.progress(75)
             st.session_state.analysis_complete = True
+            st.session_state.new_data_uploaded = False  # Reset the flag after processing
             progress_bar.progress(100)
             status_text.text("✅ Analysis completed successfully!")
             st.balloons()

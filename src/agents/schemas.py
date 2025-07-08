@@ -6,23 +6,23 @@ class AnalysisSummaryResponse(BaseModel):
     recommendations: list[str] = Field(description="A list of actionable recommendations based on the summary.")
 
 class OrderStandardCouponResponse(BaseModel):
-    # Combo Offer
-    combo_offer: str = Field(description="Best Combo Offer strategy to increase basket size.")
-    combo_offer_reasoning: str = Field(description="Why this combo offer makes sense based on order patterns.")
-    combo_offer_cost_analysis: str = Field(description="Financial projection for the combo offer.")
+    # Combo coupon
+    combo_coupon: str = Field(description="Best Combo coupon strategy to increase basket size.")
+    combo_coupon_reasoning: str = Field(description="Why this combo coupon makes sense based on order patterns.")
+    combo_coupon_cost_analysis: str = Field(description="Financial projection for the combo coupon.")
 
-    # Threshold Offer
-    threshold_offer: str = Field(description="Best Threshold Offer to increase average order value.")
-    threshold_offer_reasoning: str = Field(description="Why this threshold works based on bill value distribution.")
-    threshold_offer_cost_analysis: str = Field(description="Financial projection for the threshold offer.")
+    # Threshold coupon
+    threshold_coupon: str = Field(description="Best Threshold coupon to increase average order value.")
+    threshold_coupon_reasoning: str = Field(description="Why this threshold works based on bill value distribution.")
+    threshold_coupon_cost_analysis: str = Field(description="Financial projection for the threshold coupon.")
 
-    # Happy Hours Offer
-    happy_hours_offer: str = Field(description="Best Happy Hours offer to boost low traffic periods.")
-    happy_hours_offer_reasoning: str = Field(description="Why this timing-based offer is optimal.")
-    happy_hours_offer_cost_analysis: str = Field(description="Financial projection for the happy hours offer.")
+    # Happy Hours coupon
+    happy_hours_coupon: str = Field(description="Best Happy Hours coupon to boost low traffic periods.")
+    happy_hours_coupon_reasoning: str = Field(description="Why this timing-based coupon is optimal.")
+    happy_hours_coupon_cost_analysis: str = Field(description="Financial projection for the happy hours coupon.")
     
     # Combined analysis
-    combined_cost_analysis: str = Field(description="Overall financial impact and risk factors for all offers combined.")
+    combined_cost_analysis: str = Field(description="Overall financial impact and risk factors for all coupons combined.")
 
 class CustomerStandardCouponResponse(BaseModel):
     # Joining Bonus Coupon
@@ -46,7 +46,7 @@ class CustomerStandardCouponResponse(BaseModel):
 class ProductStandardCouponResponse(BaseModel):
     """Define response fields for product-related standard coupons."""
     # Example:
-    slow_moving_item_offer: str = Field(description="Offer to boost sales of slow-moving items.")
+    slow_moving_item_coupon: str = Field(description="coupon to boost sales of slow-moving items.")
     slow_moving_item_reasoning: str = Field(description="Reasoning based on sales data.")
 
 

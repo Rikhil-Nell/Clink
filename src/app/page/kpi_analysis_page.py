@@ -39,7 +39,7 @@ def render_kpi_analysis_page():
         if st.session_state.customer_analysis_results is not None:
             with st.spinner("🔍 Generating customer insights..."):
                 customer_kpi_results = run_customer_summarization(st.session_state.customer_analysis_results)
-
+                st.session_state.customer_analysis_summary = customer_kpi_results
             # --- Top-level metrics ---
             segments = customer_kpi_results["customer_segments"]
             financial = customer_kpi_results["financial_summary"]
@@ -120,35 +120,35 @@ def render_kpi_analysis_page():
         st.subheader("📈 Order-Level KPI Dashboard")
 
         with st.spinner("🔍 Generating order insights..."):
-            kpi_results = run_order_summarization(
+            order_kpi_results = run_order_summarization(
                 invoice_df=st.session_state.invoice_df,
                 cooc_matrix=st.session_state.cooc_matrix_df
             )
-
+            st.session_state.order_analysis_summary = order_kpi_results
         st.subheader("🎯 Key Performance Indicators")
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.metric(
                 "📊 Total Orders",
-                f"{kpi_results['invoice_analysis']['total_orders']:,}",
+                f"{order_kpi_results['invoice_analysis']['total_orders']:,}",
                 help="Total number of orders processed"
             )
         with col2:
             st.metric(
                 "💰 Total Revenue",
-                f"₹{kpi_results['invoice_analysis']['total_revenue']:,}",
+                f"₹{order_kpi_results['invoice_analysis']['total_revenue']:,}",
                 help="Total revenue generated"
             )
         with col3:
             st.metric(
                 "🛒 Average Order Value",
-                f"₹{kpi_results['invoice_analysis']['average_order_value']:,}",
+                f"₹{order_kpi_results['invoice_analysis']['average_order_value']:,}",
                 help="Average value per order"
             )
         with col4:
             st.metric(
                 "📦 Items per Order",
-                f"{kpi_results['invoice_analysis']['average_items_per_order']:.1f}",
+                f"{order_kpi_results['invoice_analysis']['average_items_per_order']:.1f}",
                 help="Average number of items per order"
             )
 
@@ -160,7 +160,7 @@ def render_kpi_analysis_page():
             col1, col2 = st.columns(2)
             with col1:
                 st.subheader("📈 Order Value Distribution")
-                order_dist = kpi_results['invoice_analysis']['order_value_distribution']
+                order_dist = order_kpi_results['invoice_analysis']['order_value_distribution']
                 dist_df = pd.DataFrame([
                     {"Metric": "Average", "Value": f"₹{order_dist['mean']:,.0f}"},
                     {"Metric": "Median", "Value": f"₹{order_dist['50%']:,.0f}"},
@@ -172,7 +172,7 @@ def render_kpi_analysis_page():
                 st.dataframe(dist_df, hide_index=True, use_container_width=True)
             with col2:
                 st.subheader("🏆 High-Value Orders")
-                hv_orders = kpi_results['invoice_analysis']['high_value_orders']
+                hv_orders = order_kpi_results['invoice_analysis']['high_value_orders']
                 st.metric("High-Value Orders", f"{hv_orders['count']:,}")
                 st.metric("Percentage", f"{hv_orders['percentage']:.1f}%")
                 st.metric("Threshold", f"₹{hv_orders['threshold']:,.0f}")
@@ -180,7 +180,7 @@ def render_kpi_analysis_page():
             st.markdown("---")
             st.subheader("🛒 Basket Size Analysis")
             col1, col2, col3, col4 = st.columns(4)
-            basket_analysis = kpi_results['invoice_analysis']['basket_size_analysis']
+            basket_analysis = order_kpi_results['invoice_analysis']['basket_size_analysis']
             with col1:
                 st.metric("Avg Unique Items", f"{basket_analysis['avg_unique_items']:.1f}")
             with col2:
@@ -191,7 +191,7 @@ def render_kpi_analysis_page():
                 st.metric("Most Common Size", basket_analysis['most_common_basket_size'])
 
             st.markdown("---")
-            temporal = kpi_results['invoice_analysis']['temporal_patterns']
+            temporal = order_kpi_results['invoice_analysis']['temporal_patterns']
             if temporal:
                 st.subheader("🕐 Temporal Patterns")
                 if 'day_of_week_distribution' in temporal and temporal['day_of_week_distribution']:
@@ -257,7 +257,7 @@ def render_kpi_analysis_page():
 
         with tab2:
             st.subheader("🔥 Top Product Pairings")
-            strongest_pairs = kpi_results['cooccurrence_analysis']['strongest_cooccurrences']
+            strongest_pairs = order_kpi_results['cooccurrence_analysis']['strongest_cooccurrences']
             if strongest_pairs:
                 for i, pair in enumerate(strongest_pairs[:10], 1):
                     with st.expander(f"#{i} {pair['item_1']} + {pair['item_2']}", expanded=i <= 3):
@@ -271,8 +271,8 @@ def render_kpi_analysis_page():
 
         with tab3:
             st.subheader("💡 AI-Powered Business Recommendations")
-            if 'business_insights' in kpi_results:
-                insights = kpi_results['business_insights']
+            if 'business_insights' in order_kpi_results:
+                insights = order_kpi_results['business_insights']
                 if insights['bundle_opportunities']:
                     st.write("### 🎁 Bundle Opportunities")
                     for bundle in insights['bundle_opportunities']:
