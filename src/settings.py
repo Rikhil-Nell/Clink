@@ -1,25 +1,24 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
-import streamlit as st
+from openai import AsyncOpenAI
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelName, OpenAIModelSettings
 import logfire
 
 class AppSettings(BaseSettings):
     """Loads settings from environment variables or a .env file."""
-    logfire_key: str = st.secrets["LOGFIRE_KEY"]
-    openai_api_key: str = st.secrets["OPENAI_API_KEY"]
+    logfire_key: str = Field(..., env="LOGFIRE_KEY")
+    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
 
     # Model Configuration
-    analysis_model_name: OpenAIModelName = "gpt-4.1"
-    coupon_model_name: OpenAIModelName = "gpt-4.1"
-    chat_model_name: OpenAIModelName = "gpt-4.1-mini"
+    analysis_model_name: OpenAIModelName = "gpt-4-turbo"
+    coupon_model_name: OpenAIModelName = "gpt-4-turbo"
     model_temperature: float = 0.1
     model_top_p: float = 0.95
 
-    # class Config:
-    #     env_file = "env"
-    #     extra = "ignore"
+    class Config:
+        env_file = ".env"
+        extra = "ignore"
 
 # --- Initialize Global Objects ---
 settings = AppSettings()
