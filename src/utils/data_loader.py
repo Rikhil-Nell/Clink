@@ -40,7 +40,11 @@ class DataLoader:
         
         # Filter unwanted order types
         df = df[df['order_type'] != "Delivery(Parcel)"]
-        
+
+        # Remove rows with certain items (water, cigarettes etc)
+        banned_patterns = r"(?i)\b(water|water bottle|1 ltr|cigarette|cigarettes)\b"
+        df = df[~df['item_name'].str.contains(banned_patterns, na=False, regex=True)]
+            
         # Define numeric columns
         numeric_cols = [
             'my_amount', 'total_tax', 'discount', 'delivery_charge',
