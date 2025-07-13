@@ -1,12 +1,11 @@
 from typing import Union, Optional
 from pydantic import BaseModel
 from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
 
 import logfire
 
 # Local Imports
-from src.settings import settings, openai_provider, default_model_settings
+from src.settings import research_model, chat_model, analysis_model, coupon_model, default_model_settings
 from src.agents.schemas import (
     AnalysisSummaryResponse,
     OrderStandardCouponResponse,
@@ -33,7 +32,7 @@ def create_agent(
     Factory function to create an agent based on category and type.
     
     Args:
-        agent_type: 'analysis_summary', 'standard_coupon', 'creative_coupon' or "chat".
+        agent_type: 'research', 'analysis_summary', 'standard_coupon', 'creative_coupon' or "chat".
         category: 'order', 'customer', or 'product'.
         
     Returns:
@@ -42,12 +41,9 @@ def create_agent(
     instructions = get_prompt(agent_type=agent_type, category=category)
     
     if agent_type == "analysis_summary":
-        model = OpenAIModel(
-            model_name=settings.analysis_model_name, 
-            provider=openai_provider
-        )
+
         return Agent[AnalysisSummaryResponse](
-            model=model,
+            model=analysis_model,
             model_settings=default_model_settings,
             instructions=instructions,
             output_type=AnalysisSummaryResponse,
@@ -58,13 +54,9 @@ def create_agent(
         output_schema = STANDARD_COUPON_SCHEMAS.get(category)
         if not output_schema:
             raise ValueError(f"No standard coupon schema defined for category: {category}")
-            
-        model = OpenAIModel(
-            model_name=settings.coupon_model_name, 
-            provider=openai_provider
-        )
+
         return Agent[output_schema](
-            model=model,
+            model=coupon_model,
             model_settings=default_model_settings,
             instructions=instructions,
             output_type=output_schema,
@@ -72,30 +64,32 @@ def create_agent(
         )
         
     elif agent_type == "creative_coupon":
-        model = OpenAIModel(
-            model_name=settings.coupon_model_name, 
-            provider=openai_provider
-        )
-        creative_prompt = get_prompt('generic', 'creative_coupon')
+
         return Agent[CreativeCouponResponse](
-            model=model,
+            model=coupon_model,
             model_settings=default_model_settings,
-            instructions=creative_prompt,
+            instructions=instructions,
             output_type=CreativeCouponResponse,
             instrument=True
         )
         
-    elif agent_type == "generic":
-        model = OpenAIModel(
-            model_name=settings.chat_model_name, 
-            provider=openai_provider
-        )
-        chat_prompt = get_prompt('generic', 'chat')
+    elif agent_type == "chat":
+
         return Agent(
-            model=model,
+            model=chat_model,
             model_settings=default_model_settings,
-            instructions=chat_prompt,
+            instructions=instructions,
             instrument=True
         )
+    
+    elif agent_type == "research":
+
+        return Agent(
+            model=research_model,
+            model_settings=default_model_settings,
+            instructions=instructions,
+            instrument=True
+        ) 
+    
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")

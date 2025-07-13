@@ -34,6 +34,19 @@ def handle_file_upload():
         return uploaded_file
     return None
 
+def handle_cafe_link_input():
+    cafe_link = st.text_input(
+        "🔗 Cafe Link (Optional)",
+        placeholder="Enter your cafe's website or social media link...",
+        help="Add your cafe's website, Instagram, or any other link for reference"
+    )
+    if cafe_link:
+        st.session_state.cafe_link = cafe_link
+    elif 'cafe_link' not in st.session_state:
+        st.session_state.cafe_link = ""
+    
+    return cafe_link
+
 def run_analysis(uploaded_file):
     progress_bar = st.progress(0)
     status_text = st.empty()
@@ -174,7 +187,18 @@ def render_data_upload_page():
         """)
     with col2:
         st.info("💡 **Pro Tip:** \n\nMake sure your data includes order-level information with item details for the best analysis!")
+    
+    # File upload section
     uploaded_file = handle_file_upload()
+    
+    # Cafe link input section
+    st.markdown("---")
+    cafe_link = handle_cafe_link_input()
+    
+    # Show current cafe link if it exists
+    if st.session_state.get('cafe_link'):
+        st.success(f"✅ Cafe link saved: {st.session_state.cafe_link}")
+    
     if uploaded_file:
         run_analysis(uploaded_file)
     show_overview()

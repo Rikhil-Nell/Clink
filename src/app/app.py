@@ -43,12 +43,12 @@ def main():    # 2. Streamlit page config and styling
         render_coupon_generation_page()
 
     # 6. Footer (optional, can be moved to a utils/footer.py if desired)
-    st.markdown("---")
-    st.markdown("""
-        <div style="text-align: center; color: #666; padding: 1rem;">
-            <p>Made with ❤️ for Indian restaurants | Powered by data-driven insights</p>
-        </div>
-    """, unsafe_allow_html=True)
+    # st.markdown("---")
+    # st.markdown("""
+    #     <div style="text-align: center; color: #666; padding: 1rem;">
+    #         <p>Made with ❤️ for Indian restaurants | Powered by data-driven insights</p>
+    #     </div>
+    # """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

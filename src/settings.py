@@ -9,10 +9,14 @@ class AppSettings(BaseSettings):
     """Loads settings from environment variables or a .env file."""
     logfire_key: str = Field(..., env="LOGFIRE_KEY")
     openai_api_key: str = Field(..., env="OPENAI_API_KEY")
+    perplexity_api_key: str = Field(...,env="PERPLEXITY_API_KEY")
 
     # Model Configuration
-    analysis_model_name: OpenAIModelName = "gpt-4-turbo"
-    coupon_model_name: OpenAIModelName = "gpt-4-turbo"
+    research_model_name: OpenAIModelName = "sonar"
+    analysis_model_name: OpenAIModelName = "gpt-4.1"
+    coupon_model_name: OpenAIModelName = "gpt-4.1"
+    chat_model_name: OpenAIModelName = "gpt-4.1-mini"
+    
     model_temperature: float = 0.1
     model_top_p: float = 0.95
 
@@ -34,3 +38,10 @@ default_model_settings = OpenAIModelSettings(
 
 # Define providers
 openai_provider = OpenAIProvider(api_key=settings.openai_api_key)
+perplexity_provider = OpenAIProvider(base_url='https://api.perplexity.ai',api_key=settings.perplexity_api_key)
+
+# Define Models
+research_model = OpenAIModel(model_name=settings.research_model_name, provider=perplexity_provider)
+analysis_model = OpenAIModel(model_name=settings.analysis_model_name, provider=openai_provider)
+coupon_model = OpenAIModel(model_name=settings.coupon_model_name, provider=openai_provider)
+chat_model = OpenAIModel(model_name=settings.chat_model_name, provider=openai_provider)

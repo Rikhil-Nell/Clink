@@ -32,6 +32,12 @@ def initialize_session_state():
     if "customer_analysis_summary" not in st.session_state:
         st.session_state.customer_analysis_summary = None
     
+    if "cafe_link" not in st.session_state:
+        st.session_state.cafe_link = None
+    
+    if "research" not in st.session_state:
+        st.session_state.research = None
+    
     # Coupon generation session state variables
     if "coupon_messages" not in st.session_state:
         st.session_state.coupon_messages = []
@@ -63,6 +69,8 @@ def reset_analysis_state():
 
 def reset_coupon_state():
     """Reset coupon-related session state when new data is uploaded"""
+    st.session_state.cafe_link = None
+    st.session_state.research = None
     st.session_state.coupon_messages = []
     st.session_state.order_analysis_response = None
     st.session_state.customer_analysis_response = None
