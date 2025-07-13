@@ -1,16 +1,15 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
-from openai import AsyncOpenAI
+import streamlit as st
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelName, OpenAIModelSettings
 import logfire
 
 class AppSettings(BaseSettings):
     """Loads settings from environment variables or a .env file."""
-    logfire_key: str = Field(..., env="LOGFIRE_KEY")
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
-    perplexity_api_key: str = Field(...,env="PERPLEXITY_API_KEY")
-
+    openai_api_key: str = st.secrets["OPENAI_API_KEY"]
+    logfire_key: str = st.secrets["LOGFIRE_KEY"]
+    perplexity_api_key: str = st.secrets["PERPLEXITY_API_KEY"]
     # Model Configuration
     research_model_name: OpenAIModelName = "sonar"
     analysis_model_name: OpenAIModelName = "gpt-4.1"
