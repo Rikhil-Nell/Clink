@@ -590,7 +590,7 @@ def render_coupon_generation_page():
                 messages = build_chat_memory()
                 
                 # Run chat agent with full memory context
-                chat_response = chat_agent.run_stream(user_prompt=user_input, message_history=messages)
+                chat_response = chat_agent.run_sync(user_prompt=user_input, message_history=messages)
                 
                 # Extract all messages from the response (this includes the conversation flow)
                 all_messages = chat_response.all_messages()
