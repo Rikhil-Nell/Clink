@@ -7,9 +7,9 @@ import logfire
 
 class AppSettings(BaseSettings):
     """Loads settings from environment variables or a .env file."""
-    openai_api_key: str = st.secrets["OPENAI_API_KEY"]
-    logfire_key: str = st.secrets["LOGFIRE_KEY"]
-    perplexity_api_key: str = st.secrets["PERPLEXITY_API_KEY"]
+    openai_api_key: str = st.secrets["OPENAI_API_KEY"] | Field(...,validation_alias="OPENAI_API_KEY")
+    logfire_key: str = st.secrets["LOGFIRE_KEY"] | Field(...,validation_alias="LOGFIRE_KEY")
+    perplexity_api_key: str = st.secrets["PERPLEXITY_API_KEY"] | Field(...,validation_alias="PERPLEXITY_API_KEY")
     # Model Configuration
     research_model_name: OpenAIModelName = "sonar"
     analysis_model_name: OpenAIModelName = "gpt-4.1"
