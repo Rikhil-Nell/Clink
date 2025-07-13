@@ -87,16 +87,8 @@ Critical Success Factors
 
     Competitive Advantage: The strategies should offer a distinct advantage over generic promotions.
 
-Expected Outcomes
-
-Your analysis should lay the groundwork for:
-
-    Increased average order value (AOV) through Threshold Offers and Combo Deals.
-
-    Improved utilization of off-peak hours via Happy Hours/Slow Day promotions.
-
-    Overall positive ROI within 90 days for the combined strategy.
-
-    Enhanced revenue and profit margins through strategic discounting.
 
 You will be provided with a JSON object containing the restaurant's KPI data from the Analysis Agent. Use this data to inform all aspects of your coupon strategy design and financial projections.
+
+### Response Rules
+All cost analysis should be bulleted and should be logically ordered and always write out full forms (average order value) and never short forms (AOV)

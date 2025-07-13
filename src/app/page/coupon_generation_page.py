@@ -138,7 +138,7 @@ def display_standard_coupons(response_data: Union[OrderStandardCouponResponse, C
             if cost_analysis:
                 st.markdown("**Cost Impact:**")
                 with st.expander("View Cost Analysis", expanded=False):
-                    st.write(cost_analysis)
+                    st.markdown(cost_analysis)
                     
         except AttributeError as e:
             st.error(f"Error accessing {attr_prefix}: {e}")
@@ -151,7 +151,7 @@ def display_standard_coupons(response_data: Union[OrderStandardCouponResponse, C
         if combined_analysis:
             st.markdown("### 💰 Combined Cost Analysis")
             with st.expander("View Combined Analysis", expanded=True):
-                st.write(combined_analysis)
+                st.markdown(combined_analysis)
     except AttributeError:
         st.info("No combined cost analysis available")
 
@@ -212,93 +212,218 @@ def format_coupon_for_export(response_data: Union[OrderStandardCouponResponse, C
     
     return export_text
 
+def format_json_for_markdown(data):
+    """Format JSON data as a properly indented code block."""
+    if data is None:
+        return "```json\n\"Not available\"\n```"
+    
+    if isinstance(data, str):
+        try:
+            # Try to parse if it's a JSON string
+            data = json.loads(data)
+        except:
+            # If it's not valid JSON, wrap it as a string
+            return f"```json\n{json.dumps(data, indent=2)}\n```"
+    
+    # Format with proper indentation
+    formatted_json = json.dumps(data, indent=2, ensure_ascii=False)
+    return f"```json\n{formatted_json}\n```"
+
 def create_chat_export() -> str:
-    """Create a formatted export of all chat messages and agent responses."""
-    export_content = f"""
-{'='*80}
-COUPON GENERATION & STRATEGY EXPORT
-{'='*80}
-Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Cafe Link: {st.session_state.get('cafe_link', 'Not provided')}
+    """Create a formatted markdown export of all chat messages and agent responses."""
+    export_content = f"""# 🎯 Coupon Generation & Strategy Report
 
-{'='*80}
-SUMMARY DATA
-{'='*80}
+**Generated on:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  
+**Cafe Link:** {st.session_state.get('cafe_link', 'Not provided')}
 
-ORDER KPI SUMMARY:
-{'-'*40}
-{st.session_state.get('order_analysis_summary', 'Not available')}
+---
 
-CUSTOMER KPI SUMMARY:
-{'-'*40}
-{st.session_state.get('customer_analysis_summary', 'Not available')}
+## 📊 Summary Data
 
+### Order KPI Summary
+{format_json_for_markdown(st.session_state.get('order_analysis_summary', 'Not available'))}
+
+### Customer KPI Summary
+{format_json_for_markdown(st.session_state.get('customer_analysis_summary', 'Not available'))}
+
+---
 """
 
     # Add research results if available
     research_response = st.session_state.get("research")
     if research_response:
-        export_content += f"""
-{'='*80}
-RESEARCH RESULTS
-{'='*80}
+        export_content += f"""## 🔍 Research Results
+
 {research_response}
 
+---
 """
 
     # Add analysis responses if available
     order_analysis_response = st.session_state.get("order_analysis_response")
     if order_analysis_response:
-        export_content += f"""
-{'='*80}
-ORDER ANALYSIS RESPONSE
-{'='*80}
-{order_analysis_response}
+        export_content += f"""## 📈 Order Analysis Response
 
+{order_analysis_response.summary}\n
+{order_analysis_response.recommendations}
+
+---
 """
 
     customer_analysis_response = st.session_state.get("customer_analysis_response")
     if customer_analysis_response:
-        export_content += f"""
-{'='*80}
-CUSTOMER ANALYSIS RESPONSE
-{'='*80}
-{customer_analysis_response}
+        export_content += f"""## 👥 Customer Analysis Response
 
+{customer_analysis_response.summary}\n
+{customer_analysis_response.recommendations}
+
+---
 """
 
     # Add coupon strategies
     coupon_responses = st.session_state.get("coupon_responses", [])
     if coupon_responses:
-        export_content += f"\n{'='*80}\nCOUPON STRATEGIES\n{'='*80}\n"
+        export_content += f"""## 🎟️ Coupon Strategies
+
+"""
         for label, coupon_data in coupon_responses:
-            export_content += format_coupon_for_export(coupon_data, label)
+            export_content += format_coupon_for_export_markdown(coupon_data, label)
 
     # Add chat conversation
     chat_messages = st.session_state.get("coupon_messages", [])
     if chat_messages:
-        export_content += f"\n{'='*80}\nCHAT CONVERSATION\n{'='*80}\n"
+        export_content += f"""## 💬 Chat Conversation
+
+"""
         
         for i, message in enumerate(chat_messages):
+            timestamp = datetime.now().strftime('%H:%M:%S')
+            
             if message["role"] == "user":
-                export_content += f"\n[USER - {datetime.now().strftime('%H:%M:%S')}]\n"
-                export_content += f"{'-'*40}\n"
-                export_content += f"{message['content']}\n"
+                export_content += f"""### 👤 User - {timestamp}
+
+{message['content']}
+
+"""
             elif message["role"] == "assistant":
                 agent_type = message.get("agent_type", "assistant")
-                export_content += f"\n[ASSISTANT - {agent_type.upper()} - {datetime.now().strftime('%H:%M:%S')}]\n"
-                export_content += f"{'-'*40}\n"
                 
                 if agent_type == "chat":
-                    export_content += f"{message['content']}\n"
-                elif agent_type in ["standard_order", "standard_customer"]:
-                    export_content += f"[Coupon strategy displayed in UI - see Coupon Strategies section above]\n"
-                elif agent_type == "research":
-                    export_content += f"[Research results displayed in UI - see Research Results section above]\n"
+                    export_content += f"""### 🤖 Assistant (Chat) - {timestamp}
 
-    export_content += f"\n{'='*80}\nEND OF EXPORT\n{'='*80}\n"
+{message['content']}
+
+"""
+                elif agent_type == "research":
+                    export_content += f"""### 🔍 Assistant (Research) - {timestamp}
+
+*Research results displayed above in the Research Results section*
+
+"""
+                elif agent_type in ["standard_order", "standard_customer"]:
+                    export_content += f"""### 🎟️ Assistant ({agent_type.replace('standard_', '').title()} Coupons) - {timestamp}
+
+*Coupon strategy displayed above in the Coupon Strategies section*
+
+"""
+
+    export_content += f"""---
+
+## 📋 Export Information
+
+- **Export Format:** Markdown
+- **Total Chat Messages:** {len(chat_messages)}
+- **Total Coupon Strategies:** {len(coupon_responses)}
+- **Research Included:** {'Yes' if research_response else 'No'}
+- **Analysis Included:** {'Yes' if order_analysis_response or customer_analysis_response else 'No'}
+
+---
+
+*End of Report*
+"""
     
     return export_content
+
+def format_coupon_for_export_markdown(response_data, agent_label: str) -> str:
+    """Format coupon data for markdown export."""
+    from src.agents.schemas import OrderStandardCouponResponse, CustomerStandardCouponResponse
+    
+    export_text = f"""### 🎟️ {agent_label} Coupon Strategy
+
+"""
+    
+    # Define coupon sections based on the actual Pydantic model type
+    if isinstance(response_data, CustomerStandardCouponResponse):
+        coupon_sections = [
+            ("🎁 Joining Bonus Coupon", "joining_bonus_coupon"),
+            ("🧾 Stamp Card Coupon", "stamp_card_coupon"),
+            ("💌 Miss You Coupon", "miss_you_coupon"),
+        ]
+    elif isinstance(response_data, OrderStandardCouponResponse):
+        coupon_sections = [
+            ("🍱 Combo Coupon", "combo_coupon"),
+            ("🎯 Threshold Coupon", "threshold_coupon"),
+            ("⏰ Happy Hours Coupon", "happy_hours_coupon"),
+        ]
+    else:
+        return f"**Error:** Unknown response data type: {type(response_data)}\n\n"
+
+    # Format each coupon section
+    for section_title, attr_prefix in coupon_sections:
+        export_text += f"""#### {section_title}
+
+"""
+        
+        try:
+            coupon_text = getattr(response_data, attr_prefix, "")
+            reasoning = getattr(response_data, f"{attr_prefix}_reasoning", "")
+            cost_analysis = getattr(response_data, f"{attr_prefix}_cost_analysis", "")
+            
+            if coupon_text:
+                export_text += f"""**Coupon Content:**
+> {coupon_text.replace(chr(10), chr(10) + '> ')}
+
+"""
+            
+            if reasoning:
+                export_text += f"""**Reasoning:**
+{reasoning}
+
+"""
+            
+            if cost_analysis:
+                export_text += f"""**Cost Analysis:**
+<details>
+<summary>View Cost Analysis</summary>
+
+{cost_analysis}
+
+</details>
+
+"""
+                
+        except AttributeError as e:
+            export_text += f"**Error accessing {attr_prefix}:** {e}\n\n"
+
+    # Combined Analysis (if present)
+    try:
+        combined_analysis = getattr(response_data, "combined_cost_analysis", "")
+        if combined_analysis:
+            export_text += f"""#### 💰 Combined Cost Analysis
+
+<details>
+<summary>View Combined Analysis</summary>
+
+{combined_analysis}
+
+</details>
+
+"""
+    except AttributeError:
+        pass
+    
+    export_text += "---\n\n"
+    return export_text
 
 def render_coupon_generation_page():
     """Main function to render the coupon generation page."""
@@ -328,23 +453,15 @@ def render_coupon_generation_page():
     if st.session_state.get("new_data_uploaded", False):
         reset_coupon_state()
 
-    # Download button - positioned at the top for easy access
-    if st.session_state.get("coupon_messages") or st.session_state.get("coupon_responses"):
-        export_data = create_chat_export()
-        st.download_button(
-            label="📥 Download Complete Strategy Report",
-            data=export_data,
-            file_name=f"coupon_strategy_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-            mime="text/plain",
-            help="Download a complete report including KPIs, research, coupon strategies, and chat conversation"
-        )
-        st.divider()
-
-    # Coupon generation buttons - 3 column layout
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        if st.button("🔍 Run Research Agent"):
+    # SIDEBAR CONTROLS
+    with st.sidebar:
+        st.header("🎯 Control Panel")
+        
+        # Initial Setup Section
+        st.subheader("⚙️ Initial Setup")
+        
+        # Research Agent
+        if st.button("🔍 Run Research Agent", use_container_width=True):
             with st.spinner("Running research..."):
                 try:
                     cafe_link = st.session_state.get("cafe_link")
@@ -358,26 +475,46 @@ def render_coupon_generation_page():
                             "agent_type": "research",
                             "content": research_response.output
                         })
-                        st.success("Research completed successfully!")
+                        st.success("Research completed!")
+                        st.rerun()
                     else:
                         st.error("No cafe link found. Please provide a link for research.")
                         
                 except Exception as e:
                     st.error(f"Error running research: {e}")
-    
-    with col2:
-        if st.button("Generate Order-Based Standard Coupons"):
-            with st.spinner("Generating order-based coupons..."):
+        
+        # Analysis Agents
+        if st.button("📊 Run Analysis Agents", use_container_width=True):
+            with st.spinner("Running analysis for both order and customer data..."):
                 try:
-                    # Get research response
-                    research_response = st.session_state.get("research")
-                    
                     # Run order analysis agent
                     order_analysis_response = order_analysis_agent.run_sync(user_prompt=str(order_kpi_summary))
                     st.session_state.order_analysis_response = order_analysis_response.output
                     
-                    # Run order coupon agent with research, analysis, and KPI summary
-                    combined_input = f"Research:\n{research_response}\n\nAnalysis:\n{order_analysis_response.output}\n\nKPI Summary:\n{order_kpi_summary}"
+                    # Run customer analysis agent
+                    customer_analysis_response = customer_analysis_agent.run_sync(user_prompt=str(customer_kpi_summary))
+                    st.session_state.customer_analysis_response = customer_analysis_response.output
+                    
+                    st.success("Analysis completed for both order and customer data!")
+                    st.rerun()
+                    
+                except Exception as e:
+                    st.error(f"Error running analysis: {e}")
+        
+        st.divider()
+        
+        # Coupon Generation Section
+        st.subheader("🎟️ Coupon Generation")
+        
+        if st.button("Generate Order-Based Coupons", use_container_width=True):
+            with st.spinner("Generating order-based coupons..."):
+                try:
+                    # Get stored responses
+                    research_response = st.session_state.get("research", "")
+                    order_analysis_response = st.session_state.get("order_analysis_response", "")
+                    
+                    # Run order coupon agent with stored research and analysis
+                    combined_input = f"Research:\n{research_response}\n\nAnalysis:\n{order_analysis_response}\n\nKPI Summary:\n{order_kpi_summary}"
                     order_coupon_response = order_coupon_agent.run_sync(user_prompt=combined_input)
                     
                     # Store response
@@ -387,24 +524,21 @@ def render_coupon_generation_page():
                         "agent_type": "standard_order",
                         "response_data": order_coupon_response.output
                     })
-                    st.success("Order-based coupons generated successfully!")
+                    st.success("Order coupons generated!")
+                    st.rerun()
                     
                 except Exception as e:
                     st.error(f"Error generating order coupons: {e}")
-    
-    with col3:
-        if st.button("Generate Customer-Based Standard Coupons"):
+        
+        if st.button("Generate Customer-Based Coupons", use_container_width=True):
             with st.spinner("Generating customer-based coupons..."):
                 try:
-                    # Get research response
-                    research_response = st.session_state.get("research")
+                    # Get stored responses
+                    research_response = st.session_state.get("research", "")
+                    customer_analysis_response = st.session_state.get("customer_analysis_response", "")
                     
-                    # Run customer analysis agent
-                    customer_analysis_response = customer_analysis_agent.run_sync(user_prompt=str(customer_kpi_summary))
-                    st.session_state.customer_analysis_response = customer_analysis_response.output
-                    
-                    # Run customer coupon agent with research, analysis, and KPI summary
-                    combined_input = f"Research:\n{research_response}\n\nAnalysis:\n{customer_analysis_response.output}\n\nKPI Summary:\n{customer_kpi_summary}"
+                    # Run customer coupon agent with stored research and analysis
+                    combined_input = f"Research:\n{research_response}\n\nAnalysis:\n{customer_analysis_response}\n\nKPI Summary:\n{customer_kpi_summary}"
                     customer_coupon_response = customer_coupon_agent.run_sync(user_prompt=combined_input)
                     
                     # Store response
@@ -414,10 +548,35 @@ def render_coupon_generation_page():
                         "agent_type": "standard_customer",
                         "response_data": customer_coupon_response.output
                     })
-                    st.success("Customer-based coupons generated successfully!")
+                    st.success("Customer coupons generated!")
+                    st.rerun()
                     
                 except Exception as e:
                     st.error(f"Error generating customer coupons: {e}")
+        
+        st.divider()
+        
+        # Export Section
+        st.subheader("📥 Export")
+        if st.session_state.get("coupon_messages") or st.session_state.get("coupon_responses"):
+            export_data = create_chat_export()
+            st.download_button(
+                label="📥 Download Strategy Report",
+                data=export_data,
+                file_name=f"coupon_strategy_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
+                mime="text/plain",
+                help="Download complete report with KPIs, research, strategies, and chat",
+                use_container_width=True
+            )
+        else:
+            st.info("💡 Generate some content first to enable download")
+        
+        st.divider()
+        
+        # Debug Section
+        st.subheader("🔧 Debug")
+        if st.button("Show Debug Info", use_container_width=True):
+            st.session_state.show_debug = not st.session_state.get("show_debug", False)
 
     # Chat input for agent
     user_input = st.chat_input("Ask about coupon strategies, targeting, or effectiveness...")

@@ -90,13 +90,8 @@ For each coupon, calculate:
 - **Measurable Outcomes**: Clear metrics for tracking success
 - **Competitive Advantage**: Strategies should differentiate from platform offers
 
-## Expected Outcomes
 
-Your analysis should demonstrate:
-- **20-30% increase in new customer acquisition** (Joining Bonus)
-- **15-25% reactivation of dormant customers** (Miss You)  
-- **40-60% improvement in visit frequency** among loyalty program participants (Stamp Card)
-- **Overall positive ROI within 90 days** for the combined strategy
-- **Reduced platform dependency** and improved direct customer relationships
+Focus on creating a cohesive strategy where these three battle-tested coupons work together to build a complete customer lifecycle optimization system.
 
-Focus on creating a cohesive strategy where these three battle-tested coupons work together to build a complete customer lifecycle optimization system.x
+### Response Rules
+All cost analysis should be bulleted and should be logically ordered and always write out full forms (average order value) and never short forms (AOV)
